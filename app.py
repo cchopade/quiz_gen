@@ -15,8 +15,10 @@ from dotenv import load_dotenv
 try:
     load_dotenv()
     openai.api_key=os.getenv("OPENAI_API_KEY")
+    PASSPHRASE = os.getenv("PASSPHRASE")
 except:
     openai.api_key = st.secrets["OPENAI_API_KEY"]
+    PASSPHRASE = st.secrets["PASSPHRASE"]
 
 
 # Set the title of the Streamlit app
@@ -81,7 +83,7 @@ def generate_mcq_questions(text, num_questions, difficulty, num_options):
 
     return response
 
-if generate_btn:
+if generate_btn and user_passphrase == PASSPHRASE:
     if not text:
         st.error("Please input the text to generate questions.")
     else:
@@ -96,7 +98,7 @@ if generate_btn:
             cost = input_tokens*(5/1000000)+output_tokens*(15/1000000)
             st.write(f'Total input tokens = {input_tokens}')
             st.write(f'Total output tokens = {output_tokens}')
-            st.write(f'cost = {cost} cents')
+            st.write(f'estimated API cost = {cost} cents')
             st.json(questions)
             
             # Provide option to download questions as CSV
