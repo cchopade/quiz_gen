@@ -42,8 +42,9 @@ if generate_btn:
                 # filtering the audio. File extension can be mp4/webm
                 # You can see all the available streams by print(video.streams)
                 audio = video.streams.filter(only_audio=True, file_extension='mp4').first()
-                audio.download(filename="audio.mp4")
                 st.write('Download Completed!')
+                audio.download(filename="audio.mp4")
+                
             
             except:
                 st.write("Connection Error")  # to handle exception

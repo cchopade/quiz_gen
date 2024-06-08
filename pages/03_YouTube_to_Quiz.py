@@ -5,13 +5,6 @@ Created on Sat Jun  8 08:15:22 2024
 @author: Chinmay.Chopade
 """
 
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Jun  7 17:31:51 2024
-
-@author: Chinmay.Chopade
-"""
-
 import streamlit as st
 import openai
 import pandas as pd
@@ -99,14 +92,14 @@ if generate_btn and user_passphrase == PASSPHRASE:
                 # filtering the audio. File extension can be mp4/webm
                 # You can see all the available streams by print(video.streams)
                 audio = video.streams.filter(only_audio=True, file_extension='mp4').first()
-                audio.download(filename="audio.mp4")
+                #audio.download(filename="audio.mp4")
                 st.write('Download Completed!')
             
             except:
                 st.write("Connection Error")  # to handle exception
                 
                 
-            audio_file = open("audio.mp4", "rb")
+            audio_file = open(audio, "rb")
             
             transcript = openai.audio.transcriptions.create(
                                 model="whisper-1",
