@@ -95,21 +95,18 @@ if generate_btn and user_passphrase == PASSPHRASE:
                 # filtering the audio. File extension can be mp4/webm
                 # You can see all the available streams by print(video.streams)
                 audio = video.streams.filter(only_audio=True, file_extension='mp4').first()
-                buffer = BytesIO()
-                audio.stream_to_buffer(buffer)
-                buffer.seek(0)
-                sound = AudioSegment.from_file(file=buffer).export(BytesIO(), 'mp4')
+                audio.download(filename="audio.mp3")
                 st.write('Download Completed!')
             
             except:
                 st.write("Connection Error")  # to handle exception
                 
                 
-            #audio_file = open(buffer.getbuffer(), "rb")
+            audio_file = open("audio.mp3", "rb")
             
             transcript = openai.audio.transcriptions.create(
                                 model="whisper-1",
-                                file=sound
+                                file=audio_file
                                 )
             text = transcript.text
             st.write('Transcription Completed!')
