@@ -93,16 +93,23 @@ if generate_btn and user_passphrase == PASSPHRASE:
 
             # Parse the response and return
             questions = response.choices[0].message.content
+            
+            #calculate the tokens and the estimaed cost
             input_tokens = response.usage.prompt_tokens
             output_tokens = response.usage.completion_tokens
             cost = input_tokens*(5/1000000)+output_tokens*(15/1000000)
             st.write(f'Total input tokens = {input_tokens}')
             st.write(f'Total output tokens = {output_tokens}')
             st.write(f'estimated API cost = {cost} cents')
+            
+            #write the questions to the screen
             st.json(questions)
             
-            # Provide option to download questions as CSV
-            csv = pd.read_json(questions).to_csv(index=False).encode('utf-8')
+            # convert to csv and provide option to download questions as CSV
+            csv_questions = json.loads(questions)['questions']
+            csv = pd.DataFrame.from_records(csv_questions).to_csv(index=False).encode('utf-8')
+            
+            #csv = pd.read_json(questions).to_csv(index=False).encode('utf-8')
             st.download_button(label="Download questions as CSV",
                                data=csv,
                                file_name='mcq_questions.csv',
