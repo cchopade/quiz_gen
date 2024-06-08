@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+Created on Sat Jun  8 08:15:22 2024
+
+@author: Chinmay.Chopade
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Fri Jun  7 17:31:51 2024
 
 @author: Chinmay.Chopade
@@ -11,6 +18,7 @@ import pandas as pd
 import json
 import os
 from dotenv import load_dotenv
+from pytube import YouTube
 
 try:
     load_dotenv()
@@ -22,10 +30,10 @@ except:
 
 
 # Set the title of the Streamlit app
-st.title("MCQ Quiz Generator")
+st.title("YouTube to Quiz Generator")
 
 # Input text from user
-text = st.text_area("Input the text:", height=300)
+video_url = st.text_input("Input the YouTube video link:")
 
 # Number of questions
 num_questions = st.number_input("Number of questions (max 50):", min_value=1, max_value=50, step=1)
@@ -82,9 +90,31 @@ def generate_mcq_questions(text, num_questions, difficulty, num_options):
     return response
 
 if generate_btn and user_passphrase == PASSPHRASE:
-    if not text:
+    if not video_url:
         st.error("Please input the text to generate questions.")
     else:
+        with st.spinner("Trasncribing..."):
+            try:
+                video = YouTube(video_url)
+                # filtering the audio. File extension can be mp4/webm
+                # You can see all the available streams by print(video.streams)
+                audio = video.streams.filter(only_audio=True, file_extension='mp4').first()
+                audio.download(filename="audio.mp4")
+                st.write('Download Completed!')
+            
+            except:
+                st.write("Connection Error")  # to handle exception
+                
+                
+            audio_file = open("audio.mp4", "rb")
+            
+            transcript = openai.audio.transcriptions.create(
+                                model="whisper-1",
+                                file=audio_file
+                                )
+            text = transcript.text
+            st.write('Transcription Completed!')
+            
         with st.spinner("Generating questions..."):
             response = generate_mcq_questions(text, num_questions, difficulty, num_options)
             st.success("Questions generated successfully!")
@@ -92,13 +122,6 @@ if generate_btn and user_passphrase == PASSPHRASE:
             # Parse the response and return
             questions = response.choices[0].message.content
             
-            #calculate the tokens and the estimaed cost
-            input_tokens = response.usage.prompt_tokens
-            output_tokens = response.usage.completion_tokens
-            cost = input_tokens*(5/1000000)+output_tokens*(15/1000000)
-            st.write(f'Total input tokens = {input_tokens}')
-            st.write(f'Total output tokens = {output_tokens}')
-            st.write(f'estimated API cost = {cost} cents')
             
             #write the questions to the screen
             st.json(questions)
