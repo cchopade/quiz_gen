@@ -12,6 +12,8 @@ import json
 import os
 from dotenv import load_dotenv
 from pytube import YouTube
+from io import BytesIO
+from pydub import AudioSegment 
 
 try:
     load_dotenv()
@@ -64,6 +66,7 @@ json_f = json.loads(
     
     """)
 
+
 def generate_mcq_questions(text, num_questions, difficulty, num_options):
 
     # Prompt for OpenAI
@@ -92,18 +95,21 @@ if generate_btn and user_passphrase == PASSPHRASE:
                 # filtering the audio. File extension can be mp4/webm
                 # You can see all the available streams by print(video.streams)
                 audio = video.streams.filter(only_audio=True, file_extension='mp4').first()
-                #audio.download(filename="audio.mp4")
+                buffer = BytesIO()
+                audio.stream_to_buffer(buffer)
+                buffer.seek(0)
+                sound = AudioSegment.from_file(file=buffer).export(BytesIO(), 'mp4')
                 st.write('Download Completed!')
             
             except:
                 st.write("Connection Error")  # to handle exception
                 
                 
-            audio_file = open(audio, "rb")
+            #audio_file = open(buffer.getbuffer(), "rb")
             
             transcript = openai.audio.transcriptions.create(
                                 model="whisper-1",
-                                file=audio_file
+                                file=sound
                                 )
             text = transcript.text
             st.write('Transcription Completed!')
