@@ -10,7 +10,6 @@ from pytube import YouTube
 import streamlit as st
 import openai
 from dotenv import load_dotenv
-import pafy
 import os
 import yt_dlp
 
