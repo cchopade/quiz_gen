@@ -10,7 +10,11 @@ import streamlit as st
 import openai
 import os
 from dotenv import load_dotenv
+import subprocess
+import sys
 
+
+subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "pytube"])
 
 try:
     load_dotenv()
