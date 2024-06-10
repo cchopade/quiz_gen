@@ -12,8 +12,7 @@ import json
 import os
 from dotenv import load_dotenv
 from pytube import YouTube
-from io import BytesIO
-from pydub import AudioSegment 
+
 
 try:
     load_dotenv()
@@ -95,8 +94,9 @@ if generate_btn and user_passphrase == PASSPHRASE:
                 # filtering the audio. File extension can be mp4/webm
                 # You can see all the available streams by print(video.streams)
                 audio = video.streams.filter(only_audio=True, file_extension='mp4').first()
+                duration = video.length
                 audio.download(filename="audio.mp3")
-                st.write('Download Completed!')
+                st.success('Download Completed!')
             
             except:
                 st.write("Connection Error")  # to handle exception
@@ -109,15 +109,26 @@ if generate_btn and user_passphrase == PASSPHRASE:
                                 file=audio_file
                                 )
             text = transcript.text
-            st.write('Transcription Completed!')
+            st.success('Transcription Completed!')
             
         with st.spinner("Generating questions..."):
             response = generate_mcq_questions(text, num_questions, difficulty, num_options)
             st.success("Questions generated successfully!")
-
+            
+            transcription_cost = round(round(duration/60,2)*0.006,4)
+            st.write(f'Estimated trasncription cost = USD {transcription_cost}')
+            
+            #calculate the tokens and the estimaed cost
+            input_tokens = response.usage.prompt_tokens
+            output_tokens = response.usage.completion_tokens
+            cost = round(input_tokens*(5/1000000)+output_tokens*(15/1000000),4)
+            total_cost = round(transcription_cost+cost,4)
+            
+            st.write(f'Estimated Question Generation cost = USD {cost}')
+            st.write(f'Total estimaed cost = USD {total_cost}')
+            
             # Parse the response and return
             questions = response.choices[0].message.content
-            
             
             #write the questions to the screen
             st.json(questions)

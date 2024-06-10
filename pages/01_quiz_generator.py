@@ -95,10 +95,8 @@ if generate_btn and user_passphrase == PASSPHRASE:
             #calculate the tokens and the estimaed cost
             input_tokens = response.usage.prompt_tokens
             output_tokens = response.usage.completion_tokens
-            cost = input_tokens*(5/1000000)+output_tokens*(15/1000000)
-            st.write(f'Total input tokens = {input_tokens}')
-            st.write(f'Total output tokens = {output_tokens}')
-            st.write(f'estimated API cost = {cost} cents')
+            cost = round(input_tokens*(5/1000000)+output_tokens*(15/1000000),4)
+            st.write(f'Total estimaed cost = USD {cost}')
             
             #write the questions to the screen
             st.json(questions)
