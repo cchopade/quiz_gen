@@ -49,13 +49,13 @@ if generate_btn:
             #except:
                 #st.write("Connection Error")  # to handle exception
                 
-            audio_file = open("audio.mp4", "rb")
-            transcription_cost = round(round(duration/60,2)*0.006,4)
-            st.write(f'Estimated trasncription cost = USD {transcription_cost}')
+                audio_file = open("audio.mp4", "rb")
+                transcription_cost = round(round(duration/60,2)*0.006,4)
+                st.write(f'Estimated trasncription cost = USD {transcription_cost}')
             
-            transcript = openai.audio.transcriptions.create(
+                transcript = openai.audio.transcriptions.create(
                                 model="whisper-1",
                                 file=audio_file
                                 )
-            st.write(transcript.text)
+                st.write(transcript.text)
             
