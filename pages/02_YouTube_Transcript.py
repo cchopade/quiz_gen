@@ -5,7 +5,7 @@ Created on Sat Jun  8 07:44:24 2024
 @author: Chinmay.Chopade
 """
 import os
-os.system('pip install --upgrade pytube')
+os.system('pip3 install --upgrade pytube')
 
 from pytube import YouTube
 import streamlit as st
