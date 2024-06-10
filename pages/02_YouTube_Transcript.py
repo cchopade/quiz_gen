@@ -4,17 +4,15 @@ Created on Sat Jun  8 07:44:24 2024
 
 @author: Chinmay.Chopade
 """
+import os
+os.system('pip install --upgrade pytube')
 
 from pytube import YouTube
 import streamlit as st
 import openai
-import os
+
 from dotenv import load_dotenv
-import subprocess
-import sys
 
-
-subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "pytube"])
 
 try:
     load_dotenv()
