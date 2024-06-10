@@ -10,7 +10,7 @@ import streamlit as st
 import openai
 import os
 from dotenv import load_dotenv
-import tempfile
+
 
 try:
     load_dotenv()
@@ -36,7 +36,7 @@ if generate_btn:
     else:
         with st.spinner("Generating transcript..."):
 
-            try:
+            #try:
                 video = YouTube(video_url)
                 st.success("Video fetched")
                 duration = video.length
@@ -46,8 +46,8 @@ if generate_btn:
                 audio.download(filename="audio.mp4")
                 st.success('Download Completed!')
                          
-            except:
-                st.write("Connection Error")  # to handle exception
+            #except:
+                #st.write("Connection Error")  # to handle exception
                 
             audio_file = open("audio.mp4", "rb")
             transcription_cost = round(round(duration/60,2)*0.006,4)
